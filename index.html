@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    read cookie
+
+    <script>
+        function getDateString( expire_day ) {
+            var d = new Date( Date.now() );
+            d.setTime( d.getTime() + ( expire_day * 24 * 60 * 60 * 1000 ) );
+            return d;
+        }
+
+        function writeCookie( name, value, expire_day ) {
+            document.cookie = name + "=" + value + "; expires=" + getDateString( expire_day ).toUTCString();
+        }
+
+        function readCookie( name_to_get ) {
+            var output;
+            document.cookie.split( '; ' ).forEach( x => {
+                if ( x.split( "=" )[ 0 ] == name_to_get ) {
+                    console.log( x.split( "=" )[ 0 ] == name_to_get );
+                    output = x.split( '=' )[ 1 ];
+                }
+            } );
+            return output;
+        }
+
+        function checkCookieExist( name_to_check ) {
+            var output = false;
+            if ( readCookie( name_to_check ) == undefined ) {} else {
+                return true;
+            }
+
+        }
+
+        function deleteCookie( name_to_delete ) {
+            if ( checkCookieExist( name_to_delete ) ) {
+                writeCookie( name_to_delete, '', -1 );
+            }
+        }
+
+        window.onload = async function () {
+            console.log( 'write cookie' );
+            writeCookie( 'testname1', 'testvalue1', 100 );
+            writeCookie( 'testname2', 'testvalue2', 100 );
+            writeCookie( 'testname3', 'testvalue3', 100 );
+
+            console.log( 'check cookie' );
+            console.assert( checkCookieExist( 'testname1' ), 'check cookie exist failed' );
+            console.assert( !checkCookieExist( 'not_exist' ), 'check cookie exist failed' );
+
+            console.log( 'read cookie' );
+            console.assert( readCookie( 'testname1' ) == 'testvalue1', readCookie( 'testname1' ) );
+
+            console.log( 'delete cookie' );
+            console.assert( checkCookieExist( 'testname1' ), 'cookie want to delete not exist' +
+                checkCookieExist( 'testname1' ) );
+            console.log( 'perform delete cookie' );
+            deleteCookie( 'testname1' );
+            console.assert( !checkCookieExist( 'testname1' ), 'deleted cookie still exist, ' + checkCookieExist(
+                'testname1' ) );
+
+        }
+    </script>
+</body>
+
+</html>
